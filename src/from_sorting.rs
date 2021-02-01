@@ -7,17 +7,19 @@ where
     S: AsRef<[T]>,
     Self: Sized,
 {
-    fn from_sort(vec: S) -> Option<Self>
+    type Output;
+
+    fn from_sort(vec: S) -> Self::Output
     where
         T: Ord;
-    fn from_sort_by<F>(vec: S, compare: F) -> Option<Self>
+    fn from_sort_by<F>(vec: S, compare: F) -> Self::Output
     where
         F: FnMut(&T, &T) -> Ordering;
-    fn from_sort_by_key<B, F>(vec: S, f: F) -> Option<Self>
+    fn from_sort_by_key<B, F>(vec: S, f: F) -> Self::Output
     where
         B: Ord,
         F: FnMut(&T) -> B;
-    fn from_sort_by_cached_key<B, F>(vec: S, f: F) -> Option<Self>
+    fn from_sort_by_cached_key<B, F>(vec: S, f: F) -> Self::Output
     where
         B: Ord,
         F: FnMut(&T) -> B;
@@ -28,21 +30,23 @@ mod without_std {
     use crate::perm_type::StaticPerm;
 
     impl<T, const SIZE: usize> PermFromSorting<[T; SIZE], T> for StaticPerm<SIZE> {
-        fn from_sort(vec: [T; SIZE]) -> Option<Self>
+        type Output = Self;
+
+        fn from_sort(vec: [T; SIZE]) -> Self::Output
         where
             T: Ord,
         {
             Self::from_sort(&vec)
         }
 
-        fn from_sort_by<F>(vec: [T; SIZE], compare: F) -> Option<Self>
+        fn from_sort_by<F>(vec: [T; SIZE], compare: F) -> Self::Output
         where
             F: FnMut(&T, &T) -> Ordering,
         {
             Self::from_sort_by(&vec, compare)
         }
 
-        fn from_sort_by_key<B, F>(vec: [T; SIZE], f: F) -> Option<Self>
+        fn from_sort_by_key<B, F>(vec: [T; SIZE], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
@@ -50,7 +54,7 @@ mod without_std {
             Self::from_sort_by_key(&vec, f)
         }
 
-        fn from_sort_by_cached_key<B, F>(vec: [T; SIZE], f: F) -> Option<Self>
+        fn from_sort_by_cached_key<B, F>(vec: [T; SIZE], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
@@ -60,47 +64,51 @@ mod without_std {
     }
 
     impl<T, const SIZE: usize> PermFromSorting<&[T; SIZE], T> for StaticPerm<SIZE> {
-        fn from_sort(vec: &[T; SIZE]) -> Option<Self>
+        type Output = Self;
+
+        fn from_sort(vec: &[T; SIZE]) -> Self::Output
         where
             T: Ord,
         {
             let mut perm = Self::identity();
             sort(&mut perm.indices, vec);
-            Some(perm)
+            perm
         }
 
-        fn from_sort_by<F>(vec: &[T; SIZE], compare: F) -> Option<Self>
+        fn from_sort_by<F>(vec: &[T; SIZE], compare: F) -> Self::Output
         where
             F: FnMut(&T, &T) -> Ordering,
         {
             let mut perm = Self::identity();
             sort_by(&mut perm.indices, vec, compare);
-            Some(perm)
+            perm
         }
 
-        fn from_sort_by_key<B, F>(vec: &[T; SIZE], f: F) -> Option<Self>
+        fn from_sort_by_key<B, F>(vec: &[T; SIZE], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
         {
             let mut perm = Self::identity();
             sort_by_key(&mut perm.indices, vec, f);
-            Some(perm)
+            perm
         }
 
-        fn from_sort_by_cached_key<B, F>(vec: &[T; SIZE], f: F) -> Option<Self>
+        fn from_sort_by_cached_key<B, F>(vec: &[T; SIZE], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
         {
             let mut perm = Self::identity();
             sort_by_cached_key(&mut perm.indices, vec, f);
-            Some(perm)
+            perm
         }
     }
 
     impl<T, const SIZE: usize> PermFromSorting<&[T], T> for StaticPerm<SIZE> {
-        fn from_sort(vec: &[T]) -> Option<Self>
+        type Output = Option<Self>;
+
+        fn from_sort(vec: &[T]) -> Self::Output
         where
             T: Ord,
         {
@@ -112,7 +120,7 @@ mod without_std {
             Some(perm)
         }
 
-        fn from_sort_by<F>(vec: &[T], compare: F) -> Option<Self>
+        fn from_sort_by<F>(vec: &[T], compare: F) -> Self::Output
         where
             F: FnMut(&T, &T) -> Ordering,
         {
@@ -124,7 +132,7 @@ mod without_std {
             Some(perm)
         }
 
-        fn from_sort_by_key<B, F>(vec: &[T], f: F) -> Option<Self>
+        fn from_sort_by_key<B, F>(vec: &[T], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
@@ -137,7 +145,7 @@ mod without_std {
             Some(perm)
         }
 
-        fn from_sort_by_cached_key<B, F>(vec: &[T], f: F) -> Option<Self>
+        fn from_sort_by_cached_key<B, F>(vec: &[T], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
@@ -158,21 +166,23 @@ mod with_std {
     use crate::perm_type::{DynamicPerm, StaticPerm};
 
     impl<T, const SIZE: usize> PermFromSorting<[T; SIZE], T> for DynamicPerm {
-        fn from_sort(vec: [T; SIZE]) -> Option<Self>
+        type Output = Self;
+
+        fn from_sort(vec: [T; SIZE]) -> Self::Output
         where
             T: Ord,
         {
             Self::from_sort(vec.as_ref())
         }
 
-        fn from_sort_by<F>(vec: [T; SIZE], compare: F) -> Option<Self>
+        fn from_sort_by<F>(vec: [T; SIZE], compare: F) -> Self::Output
         where
             F: FnMut(&T, &T) -> Ordering,
         {
             Self::from_sort_by(vec.as_ref(), compare)
         }
 
-        fn from_sort_by_key<B, F>(vec: [T; SIZE], f: F) -> Option<Self>
+        fn from_sort_by_key<B, F>(vec: [T; SIZE], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
@@ -180,7 +190,7 @@ mod with_std {
             Self::from_sort_by_key(vec.as_ref(), f)
         }
 
-        fn from_sort_by_cached_key<B, F>(vec: [T; SIZE], f: F) -> Option<Self>
+        fn from_sort_by_cached_key<B, F>(vec: [T; SIZE], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
@@ -190,21 +200,23 @@ mod with_std {
     }
 
     impl<T, const SIZE: usize> PermFromSorting<&[T; SIZE], T> for DynamicPerm {
-        fn from_sort(vec: &[T; SIZE]) -> Option<Self>
+        type Output = Self;
+
+        fn from_sort(vec: &[T; SIZE]) -> Self::Output
         where
             T: Ord,
         {
             Self::from_sort(vec.as_ref())
         }
 
-        fn from_sort_by<F>(vec: &[T; SIZE], compare: F) -> Option<Self>
+        fn from_sort_by<F>(vec: &[T; SIZE], compare: F) -> Self::Output
         where
             F: FnMut(&T, &T) -> Ordering,
         {
             Self::from_sort_by(vec.as_ref(), compare)
         }
 
-        fn from_sort_by_key<B, F>(vec: &[T; SIZE], f: F) -> Option<Self>
+        fn from_sort_by_key<B, F>(vec: &[T; SIZE], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
@@ -212,7 +224,7 @@ mod with_std {
             Self::from_sort_by_key(vec.as_ref(), f)
         }
 
-        fn from_sort_by_cached_key<B, F>(vec: &[T; SIZE], f: F) -> Option<Self>
+        fn from_sort_by_cached_key<B, F>(vec: &[T; SIZE], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
@@ -222,61 +234,65 @@ mod with_std {
     }
 
     impl<T> PermFromSorting<&[T], T> for DynamicPerm {
-        fn from_sort(vec: &[T]) -> Option<Self>
+        type Output = Self;
+
+        fn from_sort(vec: &[T]) -> Self::Output
         where
             T: Ord,
         {
             let mut perm = Self::identity(vec.len());
             sort(&mut perm.indices, vec);
-            Some(perm)
+            perm
         }
 
-        fn from_sort_by<F>(vec: &[T], compare: F) -> Option<Self>
+        fn from_sort_by<F>(vec: &[T], compare: F) -> Self::Output
         where
             F: FnMut(&T, &T) -> Ordering,
         {
             let mut perm = Self::identity(vec.len());
             sort_by(&mut perm.indices, vec, compare);
-            Some(perm)
+            perm
         }
 
-        fn from_sort_by_key<B, F>(vec: &[T], f: F) -> Option<Self>
+        fn from_sort_by_key<B, F>(vec: &[T], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
         {
             let mut perm = Self::identity(vec.len());
             sort_by_key(&mut perm.indices, vec, f);
-            Some(perm)
+            perm
         }
 
-        fn from_sort_by_cached_key<B, F>(vec: &[T], f: F) -> Option<Self>
+        fn from_sort_by_cached_key<B, F>(vec: &[T], f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
         {
             let mut perm = Self::identity(vec.len());
             sort_by_cached_key(&mut perm.indices, vec, f);
-            Some(perm)
+            perm
         }
     }
 
     impl<T> PermFromSorting<Vec<T>, T> for DynamicPerm {
-        fn from_sort(vec: Vec<T>) -> Option<Self>
+        type Output = Self;
+
+        fn from_sort(vec: Vec<T>) -> Self::Output
         where
             T: Ord,
         {
             Self::from_sort(vec.as_slice())
         }
 
-        fn from_sort_by<F>(vec: Vec<T>, compare: F) -> Option<Self>
+        fn from_sort_by<F>(vec: Vec<T>, compare: F) -> Self::Output
         where
             F: FnMut(&T, &T) -> Ordering,
         {
             Self::from_sort_by(vec.as_slice(), compare)
         }
 
-        fn from_sort_by_key<B, F>(vec: Vec<T>, f: F) -> Option<Self>
+        fn from_sort_by_key<B, F>(vec: Vec<T>, f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
@@ -284,7 +300,7 @@ mod with_std {
             Self::from_sort_by_key(vec.as_slice(), f)
         }
 
-        fn from_sort_by_cached_key<B, F>(vec: Vec<T>, f: F) -> Option<Self>
+        fn from_sort_by_cached_key<B, F>(vec: Vec<T>, f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
@@ -294,21 +310,23 @@ mod with_std {
     }
 
     impl<T, const SIZE: usize> PermFromSorting<Vec<T>, T> for StaticPerm<SIZE> {
-        fn from_sort(vec: Vec<T>) -> Option<Self>
+        type Output = Option<Self>;
+
+        fn from_sort(vec: Vec<T>) -> Self::Output
         where
             T: Ord,
         {
             Self::from_sort(vec.as_slice())
         }
 
-        fn from_sort_by<F>(vec: Vec<T>, compare: F) -> Option<Self>
+        fn from_sort_by<F>(vec: Vec<T>, compare: F) -> Self::Output
         where
             F: FnMut(&T, &T) -> Ordering,
         {
             Self::from_sort_by(vec.as_slice(), compare)
         }
 
-        fn from_sort_by_key<B, F>(vec: Vec<T>, f: F) -> Option<Self>
+        fn from_sort_by_key<B, F>(vec: Vec<T>, f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
@@ -316,7 +334,7 @@ mod with_std {
             Self::from_sort_by_key(vec.as_slice(), f)
         }
 
-        fn from_sort_by_cached_key<B, F>(vec: Vec<T>, f: F) -> Option<Self>
+        fn from_sort_by_cached_key<B, F>(vec: Vec<T>, f: F) -> Self::Output
         where
             B: Ord,
             F: FnMut(&T) -> B,
