@@ -34,13 +34,28 @@ mod without_std {
             (0..SIZE).for_each(|index| indices[index] = index);
             Self { indices }
         }
+    }
 
-        #[cfg(not(feature = "no_std"))]
-        pub fn into_dynamic(self) -> DynamicPerm {
-            let Self { indices } = self;
-            DynamicPerm {
-                indices: Vec::from(indices),
-            }
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use crate::apply::PermApply;
+        use rand::prelude::*;
+
+        #[test]
+        fn static_identity() {
+            const SIZE: usize = 2014;
+
+            let perm = StaticPerm::<SIZE>::identity();
+
+            let mut rng = rand::thread_rng();
+            let mut orig = [0usize; SIZE];
+            rng.fill(orig.as_mut());
+
+            let mut new = orig.clone();
+            perm.apply(&mut new);
+
+            assert_eq!(orig, new);
         }
     }
 }
@@ -64,6 +79,38 @@ mod with_std {
             let Self { indices } = self;
             let indices = <[usize; SIZE]>::try_from(indices).ok()?;
             Some(StaticPerm { indices })
+        }
+    }
+
+    impl<const SIZE: usize> StaticPerm<SIZE> {
+        pub fn into_dynamic(self) -> DynamicPerm {
+            let Self { indices } = self;
+            DynamicPerm {
+                indices: Vec::from(indices),
+            }
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use crate::apply::PermApply;
+        use rand::prelude::*;
+
+        #[test]
+        fn static_identity() {
+            const SIZE: usize = 2014;
+
+            let perm = DynamicPerm::identity(SIZE);
+
+            let mut rng = rand::thread_rng();
+            let mut orig = [0usize; SIZE];
+            rng.fill(orig.as_mut());
+
+            let mut new = orig.clone();
+            perm.apply(&mut new).unwrap();
+
+            assert_eq!(orig, new);
         }
     }
 }

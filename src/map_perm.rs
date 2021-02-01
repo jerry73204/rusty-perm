@@ -1,47 +1,16 @@
-use crate::{perm_trait::Permutation, perm_type::Perm, size::PermSize};
+use crate::apply::PermApply;
 
-pub trait MapPerm
-where
-    Self: Sized,
-{
-    type Error;
-
-    fn map_perm<S>(self, perm: Perm<S>) -> Result<Self, Self::Error>
+pub trait MapPerm {
+    fn map_perm<P>(&mut self, perm: &P) -> P::Output
     where
-        Perm<S>: Permutation,
-        S: PermSize;
+        P: PermApply<Self>;
 }
 
-mod without_std {
-    use super::*;
-
-    impl<T> MapPerm for &mut [T] {
-        type Error = &'static str;
-
-        fn map_perm<S>(self, perm: Perm<S>) -> Result<Self, Self::Error>
-        where
-            Perm<S>: Permutation,
-            S: PermSize,
-        {
-            perm.apply(self)
-        }
-    }
-}
-
-#[cfg(not(feature = "no_std"))]
-mod with_std {
-    use super::*;
-
-    impl<T> MapPerm for &mut Vec<T> {
-        type Error = &'static str;
-
-        fn map_perm<S>(self, perm: Perm<S>) -> Result<Self, Self::Error>
-        where
-            Perm<S>: Permutation,
-            S: PermSize,
-        {
-            perm.apply(self.as_mut_slice())?;
-            Ok(self)
-        }
+impl<T> MapPerm for T {
+    fn map_perm<P>(&mut self, perm: &P) -> P::Output
+    where
+        P: PermApply<Self>,
+    {
+        perm.apply(self)
     }
 }
