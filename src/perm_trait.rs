@@ -4,7 +4,7 @@ pub trait Permutation {
     fn len(&self) -> usize;
     fn inverse(&self) -> Self;
     fn indices(&self) -> &[usize];
-    fn apply<T>(&self, slice: &mut [T]) -> Result<(), ()>;
+    fn apply<'a, T>(&self, slice: &'a mut [T]) -> Result<&'a mut [T], &'static str>;
 }
 
 mod static_ {
@@ -26,13 +26,13 @@ mod static_ {
             Self { indices: inversed }
         }
 
-        fn apply<T>(&self, slice: &mut [T]) -> Result<(), ()> {
+        fn apply<'a, T>(&self, slice: &'a mut [T]) -> Result<&'a mut [T], &'static str> {
             if slice.len() != SIZE {
-                return Err(());
+                return Err("input slice length mismatch");
             }
             let mut visited = [false; SIZE];
             apply(&self.inverse().indices, &mut visited, slice);
-            Ok(())
+            Ok(slice)
         }
     }
 }
@@ -57,14 +57,14 @@ mod dynamic {
             Self { indices: inversed }
         }
 
-        fn apply<T>(&self, slice: &mut [T]) -> Result<(), ()> {
+        fn apply<'a, T>(&self, slice: &'a mut [T]) -> Result<&'a mut [T], &'static str> {
             let len = self.indices.len();
             if slice.len() != len {
-                return Err(());
+                return Err("input slice length mismatch");
             }
             let mut visited = vec![false; len];
             apply(&self.inverse().indices, &mut visited, slice);
-            Ok(())
+            Ok(slice)
         }
     }
 }
