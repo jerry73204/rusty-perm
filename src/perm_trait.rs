@@ -31,7 +31,7 @@ mod without_std {
                 return Err("input slice length mismatch");
             }
             let mut visited = [false; SIZE];
-            apply(&self.inverse().indices, &mut visited, slice);
+            apply(&self.indices, &mut visited, slice);
             Ok(slice)
         }
     }
@@ -63,31 +63,37 @@ mod with_std {
                 return Err("input slice length mismatch");
             }
             let mut visited = vec![false; len];
-            apply(&self.inverse().indices, &mut visited, slice);
+            apply(&self.indices, &mut visited, slice);
             Ok(slice)
         }
     }
 }
 
-fn inverse_indices(src_indices: &[usize], dst_indices: &mut [usize]) {
-    src_indices.iter().enumerate().for_each(|(src, &dst)| {
-        dst_indices[dst] = src;
+fn inverse_indices(indices: &[usize], inverse_indices: &mut [usize]) {
+    indices.iter().enumerate().for_each(|(dst, &src)| {
+        inverse_indices[src] = dst;
     });
 }
 
-fn apply<T>(inverse_indices: &[usize], visited: &mut [bool], slice: &mut [T]) {
-    unsafe { apply_unsafe(inverse_indices, visited, slice.as_mut_ptr()) }
+fn apply<T>(indices: &[usize], visited: &mut [bool], slice: &mut [T]) {
+    unsafe { apply_unsafe(indices, visited, slice.as_mut_ptr()) }
 }
 
-unsafe fn apply_unsafe<T>(inverse_indices: &[usize], visited: &mut [bool], slice: *mut T) {
-    let len = inverse_indices.len();
+unsafe fn apply_unsafe<T>(indices: &[usize], visited: &mut [bool], slice: *mut T) {
+    let len = indices.len();
 
     for idx in 0..len {
-        let mut src = idx;
+        let mut dst = idx;
+
+        if visited[dst] {
+            continue;
+        }
 
         loop {
-            let dst = inverse_indices[src];
-            if visited[dst] {
+            visited[dst] = true;
+
+            let src = indices[dst];
+            if visited[src] {
                 break;
             }
 
@@ -95,8 +101,7 @@ unsafe fn apply_unsafe<T>(inverse_indices: &[usize], visited: &mut [bool], slice
                 slice.add(src).as_mut().unwrap(),
                 slice.add(dst).as_mut().unwrap(),
             );
-            visited[src] = true;
-            src = dst;
+            dst = src;
         }
     }
 }
