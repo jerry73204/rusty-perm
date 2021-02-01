@@ -6,7 +6,7 @@ pub trait PermProduct<Rhs> {
     fn perm_product(&self, other: &Rhs) -> Self::Output;
 }
 
-mod static_ {
+mod without_std {
     use super::*;
     use crate::perm_type::StaticPerm;
 
@@ -30,7 +30,7 @@ mod static_ {
 }
 
 #[cfg(not(feature = "no_std"))]
-mod dynamic {
+mod with_std {
     use super::*;
     use crate::perm_trait::Permutation;
     use crate::perm_type::{DynamicPerm, StaticPerm};

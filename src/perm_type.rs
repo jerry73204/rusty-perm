@@ -1,8 +1,8 @@
 use crate::size::PermSize;
 
 #[cfg(not(feature = "no_std"))]
-pub use dynamic::*;
-pub use static_::*;
+pub use with_std::*;
+pub use without_std::*;
 
 #[derive(Clone, Debug, Eq, Hash)]
 pub struct Perm<S>
@@ -22,7 +22,7 @@ where
     }
 }
 
-mod static_ {
+mod without_std {
     use super::*;
     use crate::size::Static;
 
@@ -46,7 +46,7 @@ mod static_ {
 }
 
 #[cfg(not(feature = "no_std"))]
-mod dynamic {
+mod with_std {
     use super::*;
     use crate::common::*;
     use crate::size::Dynamic;

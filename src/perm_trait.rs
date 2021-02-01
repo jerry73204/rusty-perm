@@ -7,7 +7,7 @@ pub trait Permutation {
     fn apply<'a, T>(&self, slice: &'a mut [T]) -> Result<&'a mut [T], &'static str>;
 }
 
-mod static_ {
+mod without_std {
     use super::*;
     use crate::perm_type::StaticPerm;
 
@@ -38,7 +38,7 @@ mod static_ {
 }
 
 #[cfg(not(feature = "no_std"))]
-mod dynamic {
+mod with_std {
     use super::*;
     use crate::perm_type::DynamicPerm;
 

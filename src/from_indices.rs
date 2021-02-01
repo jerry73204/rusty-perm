@@ -7,7 +7,7 @@ where
     fn from_indices(indices: T) -> Option<Self>;
 }
 
-mod static_ {
+mod without_std {
     use super::*;
     use crate::perm_type::StaticPerm;
 
@@ -36,7 +36,7 @@ mod static_ {
 }
 
 #[cfg(not(feature = "no_std"))]
-mod dynamic {
+mod with_std {
     use super::*;
     use crate::perm_type::{DynamicPerm, StaticPerm};
 

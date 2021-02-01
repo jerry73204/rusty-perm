@@ -1,6 +1,6 @@
 #[cfg(not(feature = "no_std"))]
-pub use dynamic::*;
-pub use static_::*;
+pub use with_std::*;
+pub use without_std::*;
 
 pub trait PermSize
 where
@@ -9,7 +9,7 @@ where
     type Container;
 }
 
-mod static_ {
+mod without_std {
     use super::*;
 
     impl<const SIZE: usize> PermSize for Static<SIZE> {
@@ -20,7 +20,7 @@ mod static_ {
 }
 
 #[cfg(not(feature = "no_std"))]
-mod dynamic {
+mod with_std {
     use super::*;
 
     pub struct Dynamic;
