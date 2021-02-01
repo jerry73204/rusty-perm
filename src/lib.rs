@@ -17,6 +17,7 @@ mod map_perm;
 mod perm_trait;
 mod perm_type;
 mod product;
+mod rand;
 pub mod size;
 
 pub use apply::*;

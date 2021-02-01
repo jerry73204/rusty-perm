@@ -11,6 +11,9 @@ license = "Apache-2.0/MIT"
 readme = "README.md"
 authors = ["jerry73204 <jerry73204@gmail.com>"]
 
+[dependencies]
+rand = { version = "0.8.3", default-features = false, optional = true }
+
 [dev-dependencies]
 rand = "0.8.3"
 
