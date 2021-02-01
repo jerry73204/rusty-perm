@@ -158,6 +158,79 @@ mod without_std {
             Some(perm)
         }
     }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use crate::perm_trait::Permutation;
+        use rand::prelude::*;
+
+        #[test]
+        fn static_perm_from_array() {
+            const SIZE: usize = 1024;
+            let mut rng = rand::thread_rng();
+
+            for _ in 0..100 {
+                let array = {
+                    let mut array = [0isize; SIZE];
+                    rng.fill(&mut array);
+                    array
+                };
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort();
+                        array
+                    };
+
+                    let perm = StaticPerm::from_sort(&array);
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort_by(|lhs, rhs| lhs.cmp(rhs));
+                        array
+                    };
+
+                    let perm = StaticPerm::from_sort_by(&array, |lhs, rhs| lhs.cmp(rhs));
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort_by_key(|value| -value);
+                        array
+                    };
+
+                    let perm = StaticPerm::from_sort_by_key(&array, |value| -value);
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort_by_cached_key(|value| -value);
+                        array
+                    };
+
+                    let perm = StaticPerm::from_sort_by_cached_key(&array, |value| -value);
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+            }
+        }
+    }
 }
 
 #[cfg(not(feature = "no_std"))]
@@ -340,6 +413,154 @@ mod with_std {
             F: FnMut(&T) -> B,
         {
             Self::from_sort_by_cached_key(vec.as_slice(), f)
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use crate::perm_trait::Permutation;
+        use rand::prelude::*;
+
+        #[test]
+        fn static_perm_from_vec() {
+            const SIZE: usize = 1024;
+            let mut rng = rand::thread_rng();
+
+            for _ in 0..100 {
+                let array = {
+                    let mut array = vec![0isize; SIZE];
+                    rng.fill(array.as_mut_slice());
+                    array
+                };
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort();
+                        array
+                    };
+
+                    let perm = StaticPerm::<SIZE>::from_sort(array.as_slice()).unwrap();
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort_by(|lhs, rhs| lhs.cmp(rhs));
+                        array
+                    };
+
+                    let perm =
+                        StaticPerm::<SIZE>::from_sort_by(array.as_slice(), |lhs, rhs| lhs.cmp(rhs))
+                            .unwrap();
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort_by_key(|value| -value);
+                        array
+                    };
+
+                    let perm =
+                        StaticPerm::<SIZE>::from_sort_by_key(array.as_slice(), |value| -value)
+                            .unwrap();
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort_by_cached_key(|value| -value);
+                        array
+                    };
+
+                    let perm =
+                        StaticPerm::<SIZE>::from_sort_by_cached_key(array.as_slice(), |value| {
+                            -value
+                        })
+                        .unwrap();
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+            }
+        }
+
+        #[test]
+        fn dynamic_perm_from_vec() {
+            const SIZE: usize = 1024;
+            let mut rng = rand::thread_rng();
+
+            for _ in 0..100 {
+                let array = {
+                    let mut array = vec![0isize; SIZE];
+                    rng.fill(array.as_mut_slice());
+                    array
+                };
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort();
+                        array
+                    };
+
+                    let perm = DynamicPerm::from_sort(array.as_slice());
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort_by(|lhs, rhs| lhs.cmp(rhs));
+                        array
+                    };
+
+                    let perm = DynamicPerm::from_sort_by(array.as_slice(), |lhs, rhs| lhs.cmp(rhs));
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort_by_key(|value| -value);
+                        array
+                    };
+
+                    let perm = DynamicPerm::from_sort_by_key(array.as_slice(), |value| -value);
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+
+                {
+                    let sorted = {
+                        let mut array = array.clone();
+                        array.sort_by_cached_key(|value| -value);
+                        array
+                    };
+
+                    let perm =
+                        DynamicPerm::from_sort_by_cached_key(array.as_slice(), |value| -value);
+                    perm.indices().iter().enumerate().for_each(|(dst, &src)| {
+                        assert_eq!(sorted[dst], array[src]);
+                    });
+                }
+            }
         }
     }
 }
