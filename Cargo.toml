@@ -1,0 +1,19 @@
+[package]
+name = "rusty-perm"
+description = "Rusty permutation with no-std"
+version = "0.2.5"
+edition = "2018"
+documentation = "https://docs.rs/rusty-perm"
+repository = "https://github.com/jerry73204/rusty-perm"
+keywords = ["permutation", "permutations", "order", "sort", "group"]
+categories = ["algorithms", "data-structures"]
+license = "Apache-2.0/MIT"
+readme = "README.md"
+authors = ["jerry73204 <jerry73204@gmail.com>"]
+
+[dev-dependencies]
+rand = "0.8.3"
+
+[features]
+default = []
+no_std = []
