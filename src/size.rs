@@ -1,4 +1,4 @@
-#[cfg(not(feature = "no_std"))]
+#[cfg(feature = "std")]
 pub use with_std::*;
 pub use without_std::*;
 
@@ -19,7 +19,7 @@ mod without_std {
     pub struct Static<const SIZE: usize>;
 }
 
-#[cfg(not(feature = "no_std"))]
+#[cfg(feature = "std")]
 mod with_std {
     use super::*;
 

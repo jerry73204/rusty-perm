@@ -18,5 +18,5 @@ rand = { version = "0.8.3", default-features = false, optional = true }
 rand = "0.8.3"
 
 [features]
-default = []
-no_std = []
+default = ["std", "rand"]
+std = []

@@ -1,6 +1,6 @@
 use crate::size::PermSize;
 
-#[cfg(not(feature = "no_std"))]
+#[cfg(feature = "std")]
 pub use with_std::*;
 pub use without_std::*;
 
@@ -60,7 +60,7 @@ mod without_std {
     }
 }
 
-#[cfg(not(feature = "no_std"))]
+#[cfg(feature = "std")]
 mod with_std {
     use super::*;
     use crate::common::*;

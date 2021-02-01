@@ -1,4 +1,4 @@
-#[cfg(not(feature = "no_std"))]
+#[cfg(feature = "std")]
 pub use std::{
     borrow::Cow,
     cmp::Ordering,
@@ -7,7 +7,7 @@ pub use std::{
     ops::Mul,
 };
 
-#[cfg(feature = "no_std")]
+#[cfg(not(feature = "std"))]
 pub use core::{
     cmp::Ordering,
     convert::{TryFrom, TryInto},

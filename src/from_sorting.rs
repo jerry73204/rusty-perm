@@ -233,7 +233,7 @@ mod without_std {
     }
 }
 
-#[cfg(not(feature = "no_std"))]
+#[cfg(feature = "std")]
 mod with_std {
     use super::*;
     use crate::perm_type::{DynamicPerm, StaticPerm};
@@ -565,7 +565,7 @@ mod with_std {
     }
 }
 
-#[cfg(feature = "no_std")]
+#[cfg(not(feature = "std"))]
 mod algorithm {
     use super::*;
 
@@ -698,7 +698,7 @@ mod algorithm {
     }
 }
 
-#[cfg(not(feature = "no_std"))]
+#[cfg(feature = "std")]
 mod algorithm {
     use super::*;
 

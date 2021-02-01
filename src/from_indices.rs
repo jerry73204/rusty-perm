@@ -35,7 +35,7 @@ mod without_std {
     }
 }
 
-#[cfg(not(feature = "no_std"))]
+#[cfg(feature = "std")]
 mod with_std {
     use super::*;
     use crate::perm_type::{DynamicPerm, StaticPerm};
