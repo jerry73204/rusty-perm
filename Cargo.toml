@@ -1,7 +1,7 @@
 [package]
 name = "rusty-perm"
 description = "Rusty permutation with no-std"
-version = "0.2.5"
+version = "0.1.0"
 edition = "2018"
 documentation = "https://docs.rs/rusty-perm"
 repository = "https://github.com/jerry73204/rusty-perm"
