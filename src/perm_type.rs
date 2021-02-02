@@ -4,6 +4,7 @@ use crate::size::PermSize;
 pub use with_std::*;
 pub use without_std::*;
 
+/// Generic permutation data structure.
 #[derive(Clone, Debug, Eq, Hash)]
 pub struct Perm<S>
 where
@@ -26,6 +27,7 @@ mod without_std {
     use super::*;
     use crate::size::Static;
 
+    /// Permutation type with static size known in compile time.
     pub type StaticPerm<const SIZE: usize> = Perm<Static<{ SIZE }>>;
 
     impl<const SIZE: usize> StaticPerm<SIZE> {
@@ -65,6 +67,7 @@ mod with_std {
     use super::*;
     use crate::{common::*, size::Dynamic};
 
+    /// Permutation type with runtime size.
     pub type DynamicPerm = Perm<Dynamic>;
 
     impl DynamicPerm {

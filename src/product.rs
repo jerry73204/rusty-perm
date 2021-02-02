@@ -1,5 +1,6 @@
 use crate::common::*;
 
+/// The permutation composition operator.
 pub trait PermProduct<Rhs> {
     type Output;
 

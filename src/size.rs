@@ -1,7 +1,10 @@
+//! Permutation size markers.
+
 #[cfg(feature = "std")]
 pub use with_std::*;
 pub use without_std::*;
 
+/// The permutation size marker trait.
 pub trait PermSize
 where
     Self::Container: AsRef<[usize]>,
@@ -16,6 +19,7 @@ mod without_std {
         type Container = [usize; SIZE];
     }
 
+    /// The static size marker type.
     #[derive(Debug, Clone, Copy)]
     pub struct Static<const SIZE: usize>;
 }
@@ -24,6 +28,7 @@ mod without_std {
 mod with_std {
     use super::*;
 
+    /// The dynamic size marker type.
     #[derive(Debug, Clone, Copy)]
     pub struct Dynamic;
 

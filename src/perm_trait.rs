@@ -1,6 +1,12 @@
+/// An abstract representation of permutation data structure.
 pub trait Permutation {
+    /// Gets the size of permutation.
     fn len(&self) -> usize;
+
+    /// Builds the inverse of permutation.
     fn inverse(&self) -> Self;
+
+    /// Gets the reference to the internal permuted indices.
     fn indices(&self) -> &[usize];
 }
 

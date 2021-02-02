@@ -2,6 +2,7 @@ use crate::common::*;
 
 use algorithm::*;
 
+/// An operator that builds a permutation type by sorting slice-like types.
 pub trait PermFromSorting<S, T>
 where
     S: AsRef<[T]>,
@@ -9,16 +10,23 @@ where
 {
     type Output;
 
+    /// Builds a permutation by sorting a slice-like type.
     fn from_sort(vec: S) -> Self::Output
     where
         T: Ord;
+
+    /// Builds a permutation by sorting a slice-like type with a comparing function.
     fn from_sort_by<F>(vec: S, compare: F) -> Self::Output
     where
         F: FnMut(&T, &T) -> Ordering;
+
+    /// Builds a permutation by sorting a slice-like type with a key function.
     fn from_sort_by_key<B, F>(vec: S, f: F) -> Self::Output
     where
         B: Ord,
         F: FnMut(&T) -> B;
+
+    /// Builds a permutation by sorting a slice-like type with a key function. The key is not re-computed twice.
     fn from_sort_by_cached_key<B, F>(vec: S, f: F) -> Self::Output
     where
         B: Ord,

@@ -7,6 +7,7 @@ use rand::{
 };
 
 impl<const SIZE: usize> Distribution<StaticPerm<SIZE>> for Standard {
+    /// Sample an random static permutation.
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> StaticPerm<SIZE> {
         let mut perm = StaticPerm::<SIZE>::identity();
         perm.indices.shuffle(rng);

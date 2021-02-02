@@ -1,5 +1,6 @@
 use crate::common::*;
 
+/// The permutation operator on slice-like types.
 pub trait PermApply<T>
 where
     T: ?Sized,
