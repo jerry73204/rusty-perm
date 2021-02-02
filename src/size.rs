@@ -16,6 +16,7 @@ mod without_std {
         type Container = [usize; SIZE];
     }
 
+    #[derive(Debug, Clone, Copy)]
     pub struct Static<const SIZE: usize>;
 }
 
@@ -23,6 +24,7 @@ mod without_std {
 mod with_std {
     use super::*;
 
+    #[derive(Debug, Clone, Copy)]
     pub struct Dynamic;
 
     impl PermSize for Dynamic {

@@ -32,8 +32,10 @@ mod without_std {
 #[cfg(feature = "std")]
 mod with_std {
     use super::*;
-    use crate::perm_trait::Permutation;
-    use crate::perm_type::{DynamicPerm, StaticPerm};
+    use crate::{
+        perm_trait::Permutation,
+        perm_type::{DynamicPerm, StaticPerm},
+    };
 
     impl<const SIZE: usize> PermProduct<DynamicPerm> for StaticPerm<SIZE> {
         type Output = Option<StaticPerm<SIZE>>;

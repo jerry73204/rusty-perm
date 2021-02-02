@@ -1,11 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 pub mod prelude {
-    pub use super::apply::PermApply;
-    pub use super::from_indices::PermFromIndices;
-    pub use super::from_sorting::PermFromSorting;
-    pub use super::perm_trait::Permutation;
-    pub use super::product::PermProduct;
+    pub use super::{
+        apply::PermApply, from_indices::PermFromIndices, from_sorting::PermFromSorting,
+        perm_trait::Permutation, product::PermProduct,
+    };
 }
 
 mod apply;

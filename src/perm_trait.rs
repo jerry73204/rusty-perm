@@ -23,6 +23,32 @@ mod without_std {
             Self { indices: inversed }
         }
     }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use crate::apply::PermApply;
+        use rand::prelude::*;
+
+        #[test]
+        fn static_inverse() {
+            const SIZE: usize = 1024;
+            let mut rng = rand::thread_rng();
+
+            let mut perm = StaticPerm::<SIZE>::identity();
+            perm.indices.shuffle(&mut rng);
+            let inverse = perm.inverse();
+
+            let mut orig = [0usize; SIZE];
+            rng.fill(&mut orig);
+
+            let mut new = orig.clone();
+            perm.apply(&mut new);
+            inverse.apply(&mut new);
+
+            assert_eq!(orig, new);
+        }
+    }
 }
 
 #[cfg(feature = "std")]
@@ -43,6 +69,32 @@ mod with_std {
             let mut inversed = vec![0; self.indices.len()];
             inverse_indices(self.indices.as_slice(), &mut inversed);
             Self { indices: inversed }
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use crate::apply::PermApply;
+        use rand::prelude::*;
+
+        #[test]
+        fn dynamic_inverse() {
+            const SIZE: usize = 1024;
+            let mut rng = rand::thread_rng();
+
+            let mut perm = DynamicPerm::identity(SIZE);
+            perm.indices.shuffle(&mut rng);
+            let inverse = perm.inverse();
+
+            let mut orig = [0usize; SIZE];
+            rng.fill(&mut orig);
+
+            let mut new = orig.clone();
+            perm.apply(&mut new).unwrap();
+            inverse.apply(&mut new).unwrap();
+
+            assert_eq!(orig, new);
         }
     }
 }

@@ -20,6 +20,13 @@ mod without_std {
         }
     }
 
+    impl<const SIZE: usize> PermFromIndices<&[usize; SIZE]> for StaticPerm<SIZE> {
+        /// Builds a static permutation from a borrowed array of indices.
+        fn from_indices(indices: &[usize; SIZE]) -> Option<Self> {
+            Self::from_indices(indices.as_ref())
+        }
+    }
+
     impl<const SIZE: usize> PermFromIndices<&[usize]> for StaticPerm<SIZE> {
         fn from_indices(indices: &[usize]) -> Option<Self> {
             if indices.len() != SIZE {
@@ -74,7 +81,8 @@ mod with_std {
 
     impl<const SIZE: usize> PermFromIndices<Vec<usize>> for StaticPerm<SIZE> {
         fn from_indices(indices: Vec<usize>) -> Option<Self> {
-            Self::from_indices(indices.as_ref())
+            let indices: &[usize] = indices.as_ref();
+            Self::from_indices(indices)
         }
     }
 

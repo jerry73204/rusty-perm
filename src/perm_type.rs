@@ -63,8 +63,7 @@ mod without_std {
 #[cfg(feature = "std")]
 mod with_std {
     use super::*;
-    use crate::common::*;
-    use crate::size::Dynamic;
+    use crate::{common::*, size::Dynamic};
 
     pub type DynamicPerm = Perm<Dynamic>;
 
