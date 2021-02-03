@@ -28,11 +28,11 @@ rusty-perm = { version = "0.1", default-features = false }
 
 To import members from this crate,
 ```rust
-use rusty_perm::{prelude::*, DynamicPerm, StaticPerm};
+use rusty_perm::{prelude::*, PermD, PermS};
 ```
 
-Both `DynamicPerm` and `StaticPerm` represent permutations, except that
-`StaticPerm` has an embedded compile-time size in type signature. The static size
+Both `PermD` and `PermS` represent permutations, except that
+`PermS` has an embedded compile-time size in type signature. The static size
 prevents from applying permutation on arrays of wrong sizes in compile-time, and saves
 some runtime overheads.
 
@@ -41,9 +41,9 @@ some runtime overheads.
 The identity permutation can be constructed with static or dynamic size.
 
 ```rust
-use rusty_perm::{DynamicPerm, StaticPerm};
-let perm1 = StaticPerm::<10>::identity();
-let perm2 = DynamicPerm::identity(10);
+use rusty_perm::{PermD, PermS};
+let perm1 = PermS::<10>::identity();
+let perm2 = PermD::identity(10);
 ```
 
 ### Build by sorting slices and arrays
@@ -51,10 +51,10 @@ let perm2 = DynamicPerm::identity(10);
 It can extracts the permutation by sorting an array.
 
 ```rust
-use rusty_perm::{prelude::*, StaticPerm};
+use rusty_perm::{prelude::*, PermS};
 
 // `perm` is an operator that maps [9, 6, -1, 4] to [-1, 4, 6, 9].
-let perm = StaticPerm::from_sort(&[9, 6, -1, 4]);
+let perm = PermS::from_sort(&[9, 6, -1, 4]);
 
 // Apply same permutation on another array
 let mut array = [1, 2, 3, 4];
@@ -68,10 +68,10 @@ You can sort with custom comparing or key function by
 [from_sort_by_cached_key](crate::PermFromSorting::from_sort_by_cached_key).
 
 ```rust
-use rusty_perm::{prelude::*, StaticPerm};
+use rusty_perm::{prelude::*, PermS};
 
 // `perm` is an operator that maps [9, 6, -1, 4] to [9, 6, 4, -1].
-let perm = StaticPerm::from_sort_by_key(&[9, 6, -1, 4], |val| -val);
+let perm = PermS::from_sort_by_key(&[9, 6, -1, 4], |val| -val);
 
 // Apply same permutation on another array
 let mut array = [1, 2, 3, 4];
@@ -84,8 +84,8 @@ assert_eq!(array, [1, 2, 4, 3]);
 The permutation can be constructed by demonstrating the sorted indices.
 
 ```rust
-use rusty_perm::{prelude::*, DynamicPerm};
-let perm = DynamicPerm::from_indices([2, 0, 1]).unwrap();
+use rusty_perm::{prelude::*, PermD};
+let perm = PermD::from_indices([2, 0, 1]).unwrap();
 
 let mut array = [-9, -5, 3];
 perm.apply(&mut array);
@@ -97,15 +97,15 @@ assert_eq!(array, [3, -9, -5]);
 The example demonstrates the inverse and composition of permutations.
 
 ```rust
-use rusty_perm::{prelude::*, DynamicPerm, StaticPerm};
+use rusty_perm::{prelude::*, PermD, PermS};
 
 // Construct the permutation, its inverse and compose them
-let perm = StaticPerm::from_indices([2, 0, 1]).unwrap();
+let perm = PermS::from_indices([2, 0, 1]).unwrap();
 let inverse = perm.inverse();
 let composition = &inverse * &perm;
 
 // Check that composition with its inverse is identity
-assert_eq!(DynamicPerm::identity(3), composition);
+assert_eq!(PermD::identity(3), composition);
 ```
 
 ## License

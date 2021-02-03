@@ -9,22 +9,22 @@ pub trait PermProduct<Rhs> {
 
 mod without_std {
     use super::*;
-    use crate::perm_type::StaticPerm;
+    use crate::perm_type::PermS;
 
-    impl<const SIZE: usize> PermProduct<StaticPerm<SIZE>> for StaticPerm<SIZE> {
-        type Output = StaticPerm<SIZE>;
+    impl<const SIZE: usize> PermProduct<PermS<SIZE>> for PermS<SIZE> {
+        type Output = PermS<SIZE>;
 
-        fn perm_product(&self, other: &StaticPerm<SIZE>) -> Self::Output {
+        fn perm_product(&self, other: &PermS<SIZE>) -> Self::Output {
             let mut indices = [0; SIZE];
             product(&self.indices, &other.indices, &mut indices);
             Self { indices }
         }
     }
 
-    impl<const SIZE: usize> Mul<&StaticPerm<SIZE>> for &StaticPerm<SIZE> {
-        type Output = StaticPerm<SIZE>;
+    impl<const SIZE: usize> Mul<&PermS<SIZE>> for &PermS<SIZE> {
+        type Output = PermS<SIZE>;
 
-        fn mul(self, other: &StaticPerm<SIZE>) -> Self::Output {
+        fn mul(self, other: &PermS<SIZE>) -> Self::Output {
             self.perm_product(other)
         }
     }
@@ -35,13 +35,13 @@ mod with_std {
     use super::*;
     use crate::{
         perm_trait::Permutation,
-        perm_type::{DynamicPerm, StaticPerm},
+        perm_type::{PermD, PermS},
     };
 
-    impl<const SIZE: usize> PermProduct<DynamicPerm> for StaticPerm<SIZE> {
-        type Output = Option<StaticPerm<SIZE>>;
+    impl<const SIZE: usize> PermProduct<PermD> for PermS<SIZE> {
+        type Output = Option<PermS<SIZE>>;
 
-        fn perm_product(&self, other: &DynamicPerm) -> Self::Output {
+        fn perm_product(&self, other: &PermD) -> Self::Output {
             if other.len() != SIZE {
                 return None;
             }
@@ -51,23 +51,23 @@ mod with_std {
         }
     }
 
-    impl<const SIZE: usize> PermProduct<StaticPerm<SIZE>> for DynamicPerm {
-        type Output = Option<StaticPerm<SIZE>>;
+    impl<const SIZE: usize> PermProduct<PermS<SIZE>> for PermD {
+        type Output = Option<PermS<SIZE>>;
 
-        fn perm_product(&self, other: &StaticPerm<SIZE>) -> Self::Output {
+        fn perm_product(&self, other: &PermS<SIZE>) -> Self::Output {
             if self.len() != SIZE {
                 return None;
             }
             let mut indices = [0; SIZE];
             product(&self.indices, &other.indices, &mut indices);
-            Some(StaticPerm { indices })
+            Some(PermS { indices })
         }
     }
 
-    impl PermProduct<DynamicPerm> for DynamicPerm {
-        type Output = Option<DynamicPerm>;
+    impl PermProduct<PermD> for PermD {
+        type Output = Option<PermD>;
 
-        fn perm_product(&self, other: &DynamicPerm) -> Self::Output {
+        fn perm_product(&self, other: &PermD) -> Self::Output {
             if self.len() != other.len() {
                 return None;
             }
@@ -77,26 +77,26 @@ mod with_std {
         }
     }
 
-    impl<const SIZE: usize> Mul<&DynamicPerm> for &StaticPerm<SIZE> {
-        type Output = StaticPerm<SIZE>;
+    impl<const SIZE: usize> Mul<&PermD> for &PermS<SIZE> {
+        type Output = PermS<SIZE>;
 
-        fn mul(self, other: &DynamicPerm) -> Self::Output {
+        fn mul(self, other: &PermD) -> Self::Output {
             self.perm_product(other).unwrap()
         }
     }
 
-    impl<const SIZE: usize> Mul<&StaticPerm<SIZE>> for &DynamicPerm {
-        type Output = StaticPerm<SIZE>;
+    impl<const SIZE: usize> Mul<&PermS<SIZE>> for &PermD {
+        type Output = PermS<SIZE>;
 
-        fn mul(self, other: &StaticPerm<SIZE>) -> Self::Output {
+        fn mul(self, other: &PermS<SIZE>) -> Self::Output {
             self.perm_product(other).unwrap()
         }
     }
 
-    impl Mul<&DynamicPerm> for &DynamicPerm {
-        type Output = DynamicPerm;
+    impl Mul<&PermD> for &PermD {
+        type Output = PermD;
 
-        fn mul(self, other: &DynamicPerm) -> Self::Output {
+        fn mul(self, other: &PermD) -> Self::Output {
             self.perm_product(other).unwrap()
         }
     }

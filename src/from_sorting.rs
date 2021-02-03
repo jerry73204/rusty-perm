@@ -35,9 +35,9 @@ where
 
 mod without_std {
     use super::*;
-    use crate::perm_type::StaticPerm;
+    use crate::perm_type::PermS;
 
-    impl<T, const SIZE: usize> PermFromSorting<[T; SIZE], T> for StaticPerm<SIZE> {
+    impl<T, const SIZE: usize> PermFromSorting<[T; SIZE], T> for PermS<SIZE> {
         type Output = Self;
 
         fn from_sort(vec: [T; SIZE]) -> Self::Output
@@ -71,7 +71,7 @@ mod without_std {
         }
     }
 
-    impl<T, const SIZE: usize> PermFromSorting<&[T; SIZE], T> for StaticPerm<SIZE> {
+    impl<T, const SIZE: usize> PermFromSorting<&[T; SIZE], T> for PermS<SIZE> {
         type Output = Self;
 
         fn from_sort(vec: &[T; SIZE]) -> Self::Output
@@ -113,7 +113,7 @@ mod without_std {
         }
     }
 
-    impl<T, const SIZE: usize> PermFromSorting<&[T], T> for StaticPerm<SIZE> {
+    impl<T, const SIZE: usize> PermFromSorting<&[T], T> for PermS<SIZE> {
         type Output = Option<Self>;
 
         fn from_sort(vec: &[T]) -> Self::Output
@@ -192,7 +192,7 @@ mod without_std {
                         array
                     };
 
-                    let perm = StaticPerm::from_sort(&array);
+                    let perm = PermS::from_sort(&array);
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });
@@ -205,7 +205,7 @@ mod without_std {
                         array
                     };
 
-                    let perm = StaticPerm::from_sort_by(&array, |lhs, rhs| lhs.cmp(rhs));
+                    let perm = PermS::from_sort_by(&array, |lhs, rhs| lhs.cmp(rhs));
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });
@@ -218,7 +218,7 @@ mod without_std {
                         array
                     };
 
-                    let perm = StaticPerm::from_sort_by_key(&array, |value| -value);
+                    let perm = PermS::from_sort_by_key(&array, |value| -value);
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });
@@ -231,7 +231,7 @@ mod without_std {
                         array
                     };
 
-                    let perm = StaticPerm::from_sort_by_cached_key(&array, |value| -value);
+                    let perm = PermS::from_sort_by_cached_key(&array, |value| -value);
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });
@@ -244,9 +244,9 @@ mod without_std {
 #[cfg(feature = "std")]
 mod with_std {
     use super::*;
-    use crate::perm_type::{DynamicPerm, StaticPerm};
+    use crate::perm_type::{PermD, PermS};
 
-    impl<T, const SIZE: usize> PermFromSorting<[T; SIZE], T> for DynamicPerm {
+    impl<T, const SIZE: usize> PermFromSorting<[T; SIZE], T> for PermD {
         type Output = Self;
 
         fn from_sort(vec: [T; SIZE]) -> Self::Output
@@ -280,7 +280,7 @@ mod with_std {
         }
     }
 
-    impl<T, const SIZE: usize> PermFromSorting<&[T; SIZE], T> for DynamicPerm {
+    impl<T, const SIZE: usize> PermFromSorting<&[T; SIZE], T> for PermD {
         type Output = Self;
 
         fn from_sort(vec: &[T; SIZE]) -> Self::Output
@@ -314,7 +314,7 @@ mod with_std {
         }
     }
 
-    impl<T> PermFromSorting<&[T], T> for DynamicPerm {
+    impl<T> PermFromSorting<&[T], T> for PermD {
         type Output = Self;
 
         fn from_sort(vec: &[T]) -> Self::Output
@@ -356,7 +356,7 @@ mod with_std {
         }
     }
 
-    impl<T> PermFromSorting<Vec<T>, T> for DynamicPerm {
+    impl<T> PermFromSorting<Vec<T>, T> for PermD {
         type Output = Self;
 
         fn from_sort(vec: Vec<T>) -> Self::Output
@@ -390,7 +390,7 @@ mod with_std {
         }
     }
 
-    impl<T, const SIZE: usize> PermFromSorting<Vec<T>, T> for StaticPerm<SIZE> {
+    impl<T, const SIZE: usize> PermFromSorting<Vec<T>, T> for PermS<SIZE> {
         type Output = Option<Self>;
 
         fn from_sort(vec: Vec<T>) -> Self::Output
@@ -449,7 +449,7 @@ mod with_std {
                         array
                     };
 
-                    let perm = StaticPerm::<SIZE>::from_sort(array.as_slice()).unwrap();
+                    let perm = PermS::<SIZE>::from_sort(array.as_slice()).unwrap();
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });
@@ -463,7 +463,7 @@ mod with_std {
                     };
 
                     let perm =
-                        StaticPerm::<SIZE>::from_sort_by(array.as_slice(), |lhs, rhs| lhs.cmp(rhs))
+                        PermS::<SIZE>::from_sort_by(array.as_slice(), |lhs, rhs| lhs.cmp(rhs))
                             .unwrap();
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
@@ -478,7 +478,7 @@ mod with_std {
                     };
 
                     let perm =
-                        StaticPerm::<SIZE>::from_sort_by_key(array.as_slice(), |value| -value)
+                        PermS::<SIZE>::from_sort_by_key(array.as_slice(), |value| -value)
                             .unwrap();
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
@@ -493,7 +493,7 @@ mod with_std {
                     };
 
                     let perm =
-                        StaticPerm::<SIZE>::from_sort_by_cached_key(array.as_slice(), |value| {
+                        PermS::<SIZE>::from_sort_by_cached_key(array.as_slice(), |value| {
                             -value
                         })
                         .unwrap();
@@ -523,7 +523,7 @@ mod with_std {
                         array
                     };
 
-                    let perm = DynamicPerm::from_sort(array.as_slice());
+                    let perm = PermD::from_sort(array.as_slice());
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });
@@ -536,7 +536,7 @@ mod with_std {
                         array
                     };
 
-                    let perm = DynamicPerm::from_sort_by(array.as_slice(), |lhs, rhs| lhs.cmp(rhs));
+                    let perm = PermD::from_sort_by(array.as_slice(), |lhs, rhs| lhs.cmp(rhs));
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });
@@ -549,7 +549,7 @@ mod with_std {
                         array
                     };
 
-                    let perm = DynamicPerm::from_sort_by_key(array.as_slice(), |value| -value);
+                    let perm = PermD::from_sort_by_key(array.as_slice(), |value| -value);
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });
@@ -563,7 +563,7 @@ mod with_std {
                     };
 
                     let perm =
-                        DynamicPerm::from_sort_by_cached_key(array.as_slice(), |value| -value);
+                        PermD::from_sort_by_cached_key(array.as_slice(), |value| -value);
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });

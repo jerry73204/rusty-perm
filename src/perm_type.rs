@@ -80,14 +80,14 @@ mod with_std {
         pub fn into_static<const SIZE: usize>(self) -> Option<StaticPerm<SIZE>> {
             let Self { indices } = self;
             let indices = <[usize; SIZE]>::try_from(indices).ok()?;
-            Some(StaticPerm { indices })
+            Some(PermS { indices })
         }
     }
 
-    impl<const SIZE: usize> StaticPerm<SIZE> {
-        pub fn into_dynamic(self) -> DynamicPerm {
+    impl<const SIZE: usize> PermS<SIZE> {
+        pub fn into_dynamic(self) -> PermD {
             let Self { indices } = self;
-            DynamicPerm {
+            PermD {
                 indices: Vec::from(indices),
             }
         }
@@ -103,7 +103,7 @@ mod with_std {
         fn static_identity() {
             const SIZE: usize = 2014;
 
-            let perm = DynamicPerm::identity(SIZE);
+            let perm = PermD::identity(SIZE);
 
             let mut rng = rand::thread_rng();
             let mut orig = [0usize; SIZE];

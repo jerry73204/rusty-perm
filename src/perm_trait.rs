@@ -12,9 +12,9 @@ pub trait Permutation {
 
 mod without_std {
     use super::*;
-    use crate::perm_type::StaticPerm;
+    use crate::perm_type::PermS;
 
-    impl<const SIZE: usize> Permutation for StaticPerm<SIZE> {
+    impl<const SIZE: usize> Permutation for PermS<SIZE> {
         fn indices(&self) -> &[usize] {
             self.indices.as_ref()
         }
@@ -60,9 +60,9 @@ mod without_std {
 #[cfg(feature = "std")]
 mod with_std {
     use super::*;
-    use crate::perm_type::DynamicPerm;
+    use crate::perm_type::PermD;
 
-    impl Permutation for DynamicPerm {
+    impl Permutation for PermD {
         fn indices(&self) -> &[usize] {
             self.indices.as_ref()
         }

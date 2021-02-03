@@ -12,9 +12,9 @@ where
 
 mod without_std {
     use super::*;
-    use crate::perm_type::StaticPerm;
+    use crate::perm_type::PermS;
 
-    impl<T, const SIZE: usize> PermApply<[T; SIZE]> for StaticPerm<SIZE> {
+    impl<T, const SIZE: usize> PermApply<[T; SIZE]> for PermS<SIZE> {
         type Output = ();
 
         fn apply(&self, input: &mut [T; SIZE]) -> Self::Output {
@@ -23,7 +23,7 @@ mod without_std {
         }
     }
 
-    impl<T, const SIZE: usize> PermApply<[T]> for StaticPerm<SIZE> {
+    impl<T, const SIZE: usize> PermApply<[T]> for PermS<SIZE> {
         type Output = Result<(), &'static str>;
 
         fn apply(&self, input: &mut [T]) -> Self::Output {
@@ -40,9 +40,9 @@ mod without_std {
 #[cfg(feature = "std")]
 mod with_std {
     use super::*;
-    use crate::perm_type::{DynamicPerm, StaticPerm};
+    use crate::perm_type::{PermD, PermS};
 
-    impl<T, const SIZE: usize> PermApply<[T; SIZE]> for DynamicPerm {
+    impl<T, const SIZE: usize> PermApply<[T; SIZE]> for PermD {
         type Output = Result<(), &'static str>;
 
         fn apply(&self, input: &mut [T; SIZE]) -> Self::Output {
@@ -56,7 +56,7 @@ mod with_std {
         }
     }
 
-    impl<T> PermApply<[T]> for DynamicPerm {
+    impl<T> PermApply<[T]> for PermD {
         type Output = Result<(), &'static str>;
 
         fn apply(&self, input: &mut [T]) -> Self::Output {
@@ -70,7 +70,7 @@ mod with_std {
         }
     }
 
-    impl<T> PermApply<Vec<T>> for DynamicPerm {
+    impl<T> PermApply<Vec<T>> for PermD {
         type Output = Result<(), &'static str>;
 
         fn apply(&self, input: &mut Vec<T>) -> Self::Output {
@@ -84,7 +84,7 @@ mod with_std {
         }
     }
 
-    impl<T, const SIZE: usize> PermApply<Vec<T>> for StaticPerm<SIZE> {
+    impl<T, const SIZE: usize> PermApply<Vec<T>> for PermS<SIZE> {
         type Output = Result<(), &'static str>;
 
         fn apply(&self, input: &mut Vec<T>) -> Self::Output {

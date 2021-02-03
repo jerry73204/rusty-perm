@@ -10,9 +10,9 @@ where
 
 mod without_std {
     use super::*;
-    use crate::perm_type::StaticPerm;
+    use crate::perm_type::PermS;
 
-    impl<const SIZE: usize> PermFromIndices<[usize; SIZE]> for StaticPerm<SIZE> {
+    impl<const SIZE: usize> PermFromIndices<[usize; SIZE]> for PermS<SIZE> {
         /// Builds a static permutation from an owned array of indices.
         fn from_indices(indices: [usize; SIZE]) -> Option<Self> {
             if !check_indices(indices.as_ref(), &mut [false; SIZE]) {
@@ -22,14 +22,14 @@ mod without_std {
         }
     }
 
-    impl<const SIZE: usize> PermFromIndices<&[usize; SIZE]> for StaticPerm<SIZE> {
+    impl<const SIZE: usize> PermFromIndices<&[usize; SIZE]> for PermS<SIZE> {
         /// Builds a static permutation from a borrowed array of indices.
         fn from_indices(indices: &[usize; SIZE]) -> Option<Self> {
             Self::from_indices(indices.as_ref())
         }
     }
 
-    impl<const SIZE: usize> PermFromIndices<&[usize]> for StaticPerm<SIZE> {
+    impl<const SIZE: usize> PermFromIndices<&[usize]> for PermS<SIZE> {
         /// Builds a static permutation from a slice of indices.
         fn from_indices(indices: &[usize]) -> Option<Self> {
             if indices.len() != SIZE {
@@ -48,9 +48,9 @@ mod without_std {
 #[cfg(feature = "std")]
 mod with_std {
     use super::*;
-    use crate::perm_type::{DynamicPerm, StaticPerm};
+    use crate::perm_type::{PermD, PermS};
 
-    impl PermFromIndices<Cow<'_, [usize]>> for DynamicPerm {
+    impl PermFromIndices<Cow<'_, [usize]>> for PermD {
         /// Builds a dynamic permutation from a copy-on-write slice of indices.
         fn from_indices(indices: Cow<'_, [usize]>) -> Option<Self> {
             if !check_indices(indices.as_ref(), &mut vec![false; indices.len()]) {
@@ -62,7 +62,7 @@ mod with_std {
         }
     }
 
-    impl PermFromIndices<Vec<usize>> for DynamicPerm {
+    impl PermFromIndices<Vec<usize>> for PermD {
         /// Builds a dynamic permutation from a vector of indices.
         fn from_indices(indices: Vec<usize>) -> Option<Self> {
             if !check_indices(indices.as_slice(), &mut vec![false; indices.len()]) {
@@ -72,21 +72,21 @@ mod with_std {
         }
     }
 
-    impl PermFromIndices<&'_ [usize]> for DynamicPerm {
+    impl PermFromIndices<&'_ [usize]> for PermD {
         /// Builds a dynamic permutation from a slice of indices.
         fn from_indices(indices: &[usize]) -> Option<Self> {
             Self::from_indices(Cow::<'_, [usize]>::from(indices))
         }
     }
 
-    impl<const SIZE: usize> PermFromIndices<[usize; SIZE]> for DynamicPerm {
+    impl<const SIZE: usize> PermFromIndices<[usize; SIZE]> for PermD {
         /// Builds a dynamic permutation from an array of indices.
         fn from_indices(indices: [usize; SIZE]) -> Option<Self> {
             Self::from_indices(indices.as_ref())
         }
     }
 
-    impl<const SIZE: usize> PermFromIndices<Vec<usize>> for StaticPerm<SIZE> {
+    impl<const SIZE: usize> PermFromIndices<Vec<usize>> for PermS<SIZE> {
         /// Builds a static permutation from a vector indices.
         fn from_indices(indices: Vec<usize>) -> Option<Self> {
             let indices: &[usize] = indices.as_ref();
@@ -94,7 +94,7 @@ mod with_std {
         }
     }
 
-    impl<const SIZE: usize> PermFromIndices<Cow<'_, [usize]>> for StaticPerm<SIZE> {
+    impl<const SIZE: usize> PermFromIndices<Cow<'_, [usize]>> for PermS<SIZE> {
         /// Builds a static permutation from a copy-on-write slice of indices.
         fn from_indices(indices: Cow<'_, [usize]>) -> Option<Self> {
             Self::from_indices(indices.as_ref())
