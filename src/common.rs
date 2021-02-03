@@ -3,6 +3,7 @@ pub use std::{
     borrow::Cow,
     cmp::Ordering,
     convert::{TryFrom, TryInto},
+    iter::{self, Product},
     mem,
     ops::Mul,
 };
@@ -11,6 +12,7 @@ pub use std::{
 pub use core::{
     cmp::Ordering,
     convert::{TryFrom, TryInto},
+    iter::{self, Product},
     mem,
     ops::Mul,
 };
