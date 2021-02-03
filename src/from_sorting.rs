@@ -478,8 +478,7 @@ mod with_std {
                     };
 
                     let perm =
-                        PermS::<SIZE>::from_sort_by_key(array.as_slice(), |value| -value)
-                            .unwrap();
+                        PermS::<SIZE>::from_sort_by_key(array.as_slice(), |value| -value).unwrap();
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });
@@ -493,10 +492,8 @@ mod with_std {
                     };
 
                     let perm =
-                        PermS::<SIZE>::from_sort_by_cached_key(array.as_slice(), |value| {
-                            -value
-                        })
-                        .unwrap();
+                        PermS::<SIZE>::from_sort_by_cached_key(array.as_slice(), |value| -value)
+                            .unwrap();
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });
@@ -562,8 +559,7 @@ mod with_std {
                         array
                     };
 
-                    let perm =
-                        PermD::from_sort_by_cached_key(array.as_slice(), |value| -value);
+                    let perm = PermD::from_sort_by_cached_key(array.as_slice(), |value| -value);
                     perm.indices().iter().enumerate().for_each(|(dst, &src)| {
                         assert_eq!(sorted[dst], array[src]);
                     });
