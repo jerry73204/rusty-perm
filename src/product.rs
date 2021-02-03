@@ -28,6 +28,24 @@ mod without_std {
             self.perm_product(other)
         }
     }
+
+    impl<'a, const SIZE: usize> Product<&'a PermS<SIZE>> for PermS<SIZE> {
+        fn product<I>(iter: I) -> Self
+        where
+            I: Iterator<Item = &'a PermS<SIZE>>,
+        {
+            iter.fold(Self::identity(), |product, item| product.mul(item))
+        }
+    }
+
+    impl<const SIZE: usize> Product<PermS<SIZE>> for PermS<SIZE> {
+        fn product<I>(iter: I) -> Self
+        where
+            I: Iterator<Item = PermS<SIZE>>,
+        {
+            iter.fold(Self::identity(), |product, item| product.mul(&item))
+        }
+    }
 }
 
 #[cfg(feature = "std")]
@@ -98,6 +116,74 @@ mod with_std {
 
         fn mul(self, other: &PermD) -> Self::Output {
             self.perm_product(other).unwrap()
+        }
+    }
+
+    impl<'a, const SIZE: usize> Product<&'a PermD> for Option<PermS<SIZE>> {
+        fn product<I>(mut iter: I) -> Self
+        where
+            I: Iterator<Item = &'a PermD>,
+        {
+            iter.try_fold(PermS::<SIZE>::identity(), |product, item| -> Option<_> {
+                product.perm_product(item)
+            })
+        }
+    }
+
+    impl<const SIZE: usize> Product<PermD> for Option<PermS<SIZE>> {
+        fn product<I>(mut iter: I) -> Self
+        where
+            I: Iterator<Item = PermD>,
+        {
+            iter.try_fold(PermS::<SIZE>::identity(), |product, item| -> Option<_> {
+                product.perm_product(&item)
+            })
+        }
+    }
+
+    impl<'a, const SIZE: usize> Product<&'a PermS<SIZE>> for PermD {
+        fn product<I>(iter: I) -> Self
+        where
+            I: Iterator<Item = &'a PermS<SIZE>>,
+        {
+            iter.fold(PermS::<SIZE>::identity(), |product, item| product.mul(item))
+                .into_dynamic()
+        }
+    }
+
+    impl<const SIZE: usize> Product<PermS<SIZE>> for PermD {
+        fn product<I>(iter: I) -> Self
+        where
+            I: Iterator<Item = PermS<SIZE>>,
+        {
+            iter.fold(PermS::<SIZE>::identity(), |product, item| {
+                product.mul(&item)
+            })
+            .into_dynamic()
+        }
+    }
+
+    impl<'a> Product<&'a PermD> for Option<PermD> {
+        fn product<I>(mut iter: I) -> Self
+        where
+            I: Iterator<Item = &'a PermD>,
+        {
+            let first = iter.next()?.to_owned();
+            iter.try_fold(first, |product, item| -> Option<_> {
+                product.perm_product(item)
+            })
+        }
+    }
+
+    impl Product<PermD> for Option<PermD> {
+        fn product<I>(mut iter: I) -> Self
+        where
+            I: Iterator<Item = PermD>,
+        {
+            let first = iter.next()?;
+            iter.try_fold(first, |product, item| -> Option<_> {
+                product.perm_product(&item)
+            })
         }
     }
 }
