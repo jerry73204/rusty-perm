@@ -6,7 +6,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! rusty-perm = "0.1"
+//! rusty-perm = "0.2"
 //! ```
 //!
 //! It has the following cargo features.
@@ -17,7 +17,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! rusty-perm = { version = "0.1", default-features = false }
+//! rusty-perm = { version = "0.2", default-features = false }
 //! ```
 //!
 //! ## Import this crate

@@ -8,7 +8,7 @@ To import this crate to your project,
 
 ```toml
 [dependencies]
-rusty-perm = "0.1"
+rusty-perm = "0.2"
 ```
 
 It has the following cargo features.
@@ -19,7 +19,7 @@ To restrict the crate to `no_std`, you can disable the default features.
 
 ```toml
 [dependencies]
-rusty-perm = { version = "0.1", default-features = false }
+rusty-perm = { version = "0.2", default-features = false }
 ```
 
 ## Usage
