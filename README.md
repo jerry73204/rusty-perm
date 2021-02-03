@@ -62,10 +62,7 @@ perm.apply(&mut array);
 assert_eq!(array, [3, 4, 2, 1]);
 ```
 
-You can sort with custom comparing or key function by
-[from_sort_by](crate::PermFromSorting::from_sort_by),
-[from_sort_by_key](crate::PermFromSorting::from_sort_by_key) and
-[from_sort_by_cached_key](crate::PermFromSorting::from_sort_by_cached_key).
+You can sort with custom comparing or key function by `from_sort_by`, `from_sort_by_key` and `from_sort_by_cached_key`.
 
 ```rust
 use rusty_perm::{prelude::*, PermS};
