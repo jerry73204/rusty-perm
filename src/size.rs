@@ -20,7 +20,7 @@ mod without_std {
     }
 
     /// The static size marker type.
-    #[derive(Debug, Clone, Copy)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct Static<const SIZE: usize>;
 }
 
@@ -29,7 +29,7 @@ mod with_std {
     use super::*;
 
     /// The dynamic size marker type.
-    #[derive(Debug, Clone, Copy)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct Dynamic;
 
     impl PermSize for Dynamic {
