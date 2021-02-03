@@ -83,7 +83,7 @@ mod without_std {
             {
                 assert_eq!(
                     PermS::<SIZE>::cycle().inverse(),
-                    PermS::<SIZE>::inverse_cycle()
+                    PermS::<SIZE>::reverse_cycle()
                 );
             }
         }
@@ -161,14 +161,14 @@ mod with_std {
             }
 
             {
-                assert_eq!(PermD::cycle(SIZE).inverse(), PermD::inverse_cycle(SIZE));
+                assert_eq!(PermD::cycle(SIZE).inverse(), PermD::reverse_cycle(SIZE));
             }
         }
 
         #[test]
         fn dynamic_pow() {
             let cycle = PermD::cycle(6);
-            assert_eq!(cycle.pow(5), PermD::inverse_cycle(6));
+            assert_eq!(cycle.pow(5), PermD::reverse_cycle(6));
             assert_eq!(cycle.pow(6), PermD::identity(6));
 
             let set: HashSet<_> = (0..6).map(|exp| cycle.pow(exp)).collect();
@@ -178,7 +178,7 @@ mod with_std {
         #[test]
         fn static_pow() {
             let cycle = PermS::<6>::cycle();
-            assert_eq!(cycle.pow(5), PermS::<6>::inverse_cycle());
+            assert_eq!(cycle.pow(5), PermS::<6>::reverse_cycle());
             assert_eq!(cycle.pow(6), PermS::<6>::identity());
 
             let set: HashSet<_> = (0..6).map(|exp| cycle.pow(exp)).collect();
